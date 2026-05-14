@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>VPN Secure | تصفح آمن بدون حدود</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Tahoma', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #010105 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* خلفية عالم رقمي */
+        .digital-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .grid-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .glow-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(0, 200, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.8; }
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 35px 20px;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, #00ffff, #3c7eff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .header p {
+            color: #aaffff;
+            margin-top: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0ff, #0088aa);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 40px;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* VPN Status */
+        .vpn-status {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 1px solid #0ff;
+        }
+
+        .vpn-status .status-text {
+            font-size: 14px;
+            color: #0f0;
+        }
+
+        /* Search Box - هتفتح صفحة جديدة */
+        .search-section {
+            background: rgba(10, 20, 35, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 35px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .search-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #0ff;
+        }
+
+        .search-wrapper {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-wrapper input {
+            flex: 1;
+            padding: 16px 20px;
+            font-size: 16px;
+            border-radius: 60px;
+            border: 1px solid #0ff;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            outline: none;
+        }
+
+        .search-wrapper input::placeholder {
+            color: #88aaff;
+        }
+
+        .search-wrapper button {
+            background: linear-gradient(135deg, #00aaff, #0055aa);
+            border: none;
+            padding: 0 30px;
+            border-radius: 60px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .search-wrapper button:hover {
+            background: linear-gradient(135deg, #0ff, #0088aa);
+            color: #000;
+            transform: scale(0.98);
+        }
+
+        /* خوادم VPN مدفوعة */
+        .servers-section {
+            background: rgba(10, 20, 35, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 35px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .servers-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #ffcc00;
+        }
+
+        .servers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .server-item {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-left: 3px solid #0ff;
+        }
+
+        .server-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .server-flag {
+            font-size: 32px;
+        }
+
+        .server-details h4 {
+            font-size: 16px;
+        }
+
+        .server-details p {
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .server-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0ff;
+        }
+
+        .pay-btn {
+            background: linear-gradient(135deg, #ff8800, #aa4400);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .pay-btn:hover {
+            background: linear-gradient(135deg, #ffaa00, #ff5500);
+            transform: scale(1.02);
+        }
+
+        /* نافذة الدفع المنبثقة */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-content {
+            background: linear-gradient(135deg, #0a1a2a, #010510);
+            border-radius: 40px;
+            padding: 30px;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid #0ff;
+        }
+
+        .payment-content h3 {
+            color: #0ff;
+            margin-bottom: 20px;
+        }
+
+        .payment-content .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 20px;
+            margin: 15px 0;
+        }
+
+        .payment-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 30px;
+            border: 1px solid #0ff;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            text-align: center;
+        }
+
+        .payment-content button {
+            background: #0ff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        .close-modal {
+            background: #ff4444;
+            margin-left: 10px;
+        }
+
+        /* نتائج البحث */
+        .search-results {
+            background: rgba(10, 20, 35, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 35px;
+            padding: 20px;
+            display: none;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .results-list {
+            margin-top: 15px;
+        }
+
+        .result-item {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-item a {
+            color: #0ff;
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 11px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="digital-bg">
+    <div class="grid-layer"></div>
+    <div class="glow-effect"></div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>🔒 VPN Secure Pro</h1>
+        <p>تصفح آمن | حماية كاملة | بدون حدود</p>
+        <div class="badge">🚀 أسرع خوادم VPN في العالم</div>
+    </div>
+
+    <div class="vpn-status">
+        <span class="status-text">🟢 VPN غير متصل - اختر خادماً للاتصال</span>
+    </div>
+
+    <!-- قسم البحث - هيفتح صفحة جديدة -->
+    <div class="search-section">
+        <div class="search-title">🌐 بحث آمن (يفتح في صفحة جديدة)</div>
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="اكتب ما تبحث عنه... جوجل، يوتيوب، فيسبوك...">
+            <button id="searchBtn">🔍 بحث</button>
+        </div>
+    </div>
+
+    <!-- خوادم VPN مدفوعة -->
+    <div class="servers-section">
+        <div class="servers-title">💎 خوادم VPN مميزة (مدفوعة)</div>
+        <div class="servers-list">
+            <div class="server-item">
+                <div class="server-info">
+                    <span class="server-flag">🇺🇸</span>
+                    <div class="server-details">
+                        <h4>خادم أمريكا - VIP</h4>
+                        <p>أسرع سرعة | 10 جيجابت</p>
+                    </div>
+                </div>
+                <div class="server-price">50 جنيه</div>
+                <button class="pay-btn" onclick="showPayment('أمريكا VIP', 50)">شراء</button>
+            </div>
+
+            <div class="server-item">
+                <div class="server-info">
+                    <span class="server-flag">🇪🇺</span>
+                    <div class="server-details">
+                        <h4>خادم أوروبا - بريميوم</h4>
+                        <p>خوادم خاصة | فتح جميع المواقع</p>
+                    </div>
+                </div>
+                <div class="server-price">60 جنيه</div>
+                <button class="pay-btn" onclick="showPayment('أوروبا بريميوم', 60)">شراء</button>
+            </div>
+
+            <div class="server-item">
+                <div class="server-info">
+                    <span class="server-flag">🇦🇪</span>
+                    <div class="server-details">
+                        <h4>خادم الإمارات - التحميل</h4>
+                        <p>أنسب خادم للتحميل المباشر</p>
+                    </div>
+                </div>
+                <div class="server-price">40 جنيه</div>
+                <button class="pay-btn" onclick="showPayment('الإمارات التحميل', 40)">شراء</button>
+            </div>
+
+            <div class="server-item">
+                <div class="server-info">
+                    <span class="server-flag">🌍</span>
+                    <div class="server-details">
+                        <h4>باقة الثلاث خوادم</h4>
+                        <p>أمريكا + أوروبا + الإمارات | خصم خاص</p>
+                    </div>
+                </div>
+                <div class="server-price">120 جنيه</div>
+                <button class="pay-btn" onclick="showPayment('باقة الثلاث خوادم', 120)">شراء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الدفع -->
+    <div id="paymentModal" class="payment-modal">
+        <div class="payment-content">
+            <h3>💳 إتمام عملية الشراء</h3>
+            <p>الخدمة: <strong id="serviceName"></strong></p>
+            <p>المبلغ: <strong id="amountSpan"></strong> جنيه</p>
+            <div class="number">
+                📞 رقم التحويل: <span dir="ltr">01208216978</span>
+            </div>
+            <p style="font-size: 12px;">حول المبلغ على رقم فودافون كاش ثم أدخل الرقم المرجعي:</p>
+            <input type="text" id="refCode" placeholder="أدخل الرقم المرجعي">
+            <div>
+                <button onclick="confirmPayment()">✅ تأكيد الدفع</button>
+                <button class="close-modal" onclick="closePayment()">❌ إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        🔐 VPN Secure Pro - حماية كاملة للخصوصية - دعم فني 24 ساعة
+    </footer>
+</div>
+
+<script>
+    // =================== البحث - يفتح صفحة جديدة ===================
+    function performSearch() {
+        const query = document.getElementById('searchInput').value.trim();
+        if (!query) {
+            alert('الرجاء إدخال نص للبحث');
+            return;
+        }
+        
+        // فتح صفحة بحث جوجل في تبويب جديد
+        const searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+        window.open(searchUrl, '_blank');
+    }
+
+    // البحث عند الضغط على الزر
+    document.getElementById('searchBtn').addEventListener('click', performSearch);
+    
+    // البحث عند الضغط على Enter
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+
+    // =================== نظام الدفع ===================
+    let currentService = '';
+    let currentAmount = 0;
+
+    function showPayment(service, amount) {
+        currentService = service;
+        currentAmount = amount;
+        document.getElementById('serviceName').innerText = service;
+        document.getElementById('amountSpan').innerText = amount;
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closePayment() {
+        document.getElementById('paymentModal').style.display = 'none';
+        document.getElementById('refCode').value = '';
+    }
+
+    function confirmPayment() {
+        const refCode = document.getElementById('refCode').value.trim();
+        if (!refCode) {
+            alert('الرجاء إدخال الرقم المرجعي بعد التحويل');
+            return;
+        }
+        
+        // حفظ بيانات الطلب في localStorage
+        const paymentData = {
+            service: currentService,
+            amount: currentAmount,
+            refCode: refCode,
+            phone: '01208216978',
+            date: new Date().toLocaleString(),
+            status: 'جاري المراجعة'
+        };
+        
+        // حفظ الطلبات
+        let pendingOrders = JSON.parse(localStorage.getItem('vpnOrders') || '[]');
+        pendingOrders.push(paymentData);
+        localStorage.setItem('vpnOrders', JSON.stringify(pendingOrders));
+        
+        // عرض رسالة تأكيد
+        alert(`✅ تم استلام طلبك بنجاح!\n\nالخدمة: ${currentService}\nالمبلغ: ${currentAmount} جنيه\nالرقم المرجعي: ${refCode}\n\nسيتم تفعيل الخدمة خلال 5 دقائق بعد التحقق من الدفع.\n\nللتواصل: 01208216978`);
+        
+        // إغلاق النافذة
+        closePayment();
+        
+        // تحديث حالة VPN إلى متصل
+        document.querySelector('.status-text').innerHTML = `🟢 متصل على خادم ${currentService} - تم التفعيل`;
+        document.querySelector('.status-text').style.color = '#0f0';
+    }
+
+    // عرض الطلبات المعلقة في Console (للمسؤول)
+    console.log('نظام الدفع جاهز - رقم التحويل: 01208216978');
+    console.log('الطلبات المعلقة:', JSON.parse(localStorage.getItem('vpnOrders') || '[]'));
+</script>
+</body>
+</html>
